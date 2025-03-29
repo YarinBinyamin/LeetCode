@@ -5,11 +5,8 @@ import java.util.Arrays;
 public class Main3 {
 
     public static void main(String[] args) {
-        int [][] obstacleGrid1 = {{0,0,0},{0,1,0},{0,0,0}};
-        int [][] obstacleGrid2 = {{0,1},{0,0}};
-        int [] sum = {8,9,9,9};
-       int [] ans=  plusOne(sum);
-        System.out.println(uniquePathsWithObstacles(obstacleGrid2));
+
+        System.out.println(mySqrt(15));
     }
     //62
     public static int uniquePaths(int m, int n) {
@@ -106,5 +103,24 @@ public class Main3 {
         }
 
         return ansArr;
+    }
+
+    public static int mySqrt(int x) {
+        int left = 0 ;
+        int right = x;
+        while(left <= right){
+            int mid = (left + right) / 2;
+            long pow = (long) mid*mid;
+            if(pow == x){
+                return mid;
+            }
+            else if(pow <= x ){
+                left = mid +1 ;
+            }
+            else{
+                right = mid -1 ;
+            }
+        }
+        return right;
     }
 }
