@@ -44,26 +44,42 @@ class Solution:
         """
         Do not return anything, modify matrix in-place instead.
         """
-        i=0
-        j=0
-        changed = False
-        while i < len(matrix):
-            while j < len(matrix[0]):
+        FirstRow = -1
+        First_Row_HasZero = False
+        FirstCol = -1
+        First_Col_HasZero = False
+        for i in range(len(matrix)): #first Col
+            if matrix[i][0] == 0:
+                First_Col_HasZero = True
+                break
+        for j in range(len(matrix[0])): #first Row
+            if matrix[0][j] == 0:
+                First_Row_HasZero = True     
+                break
+        
+        # if matrix[i][j] = 0 -> matrix[0][j]
+        i = 0
+        while i < len(1,len(matrix)):
+            j=0
+            while j < len(1,len(matrix[0])):
                 if matrix[i][j] == 0:
-                    setThezero(matrix, i , j)
-                    i=i+1
-                    j=j+1
-                else:
-                    j=j+1
-                    changed = True
-            if changed:
-                i=i+1
-                j=0
-                changed = False
+                    matrix[0][j] = 0
+                    matrix[i][0] = 0
+        for j in range (len(matrix)):
+            if (matrix[0][j] == 0):
+                for i in range (len(matrix[0])):
+                    matrix[i][j] =0
+        for i in range (len(matrix[0])):
+            if (matrix[0][i] == 0):
+                for j in range (len(matrix)):
+                    matrix[i][j] =0  
+        if  First_Row_HasZero:
+                 
+            
                            
         
         
-    def setTheZero(matrix: List[List[int]], col : int, row :int ) -> None:
+    def setTheZero(self, matrix: List[List[int]], col : int, row :int ) -> None:
         for i in range (len(matrix)): #clear col
             matrix[i][col] = 0
         for j in range (len(matrix[0])):
