@@ -44,9 +44,7 @@ class Solution:
         """
         Do not return anything, modify matrix in-place instead.
         """
-        FirstRow = -1
         First_Row_HasZero = False
-        FirstCol = -1
         First_Col_HasZero = False
         for i in range(len(matrix)): #first Col
             if matrix[i][0] == 0:
@@ -60,8 +58,8 @@ class Solution:
         # if matrix[i][j] = 0 -> matrix[0][j]
         i = 0
         while i < len(1,len(matrix)):
-            j=0
-            while j < len(1,len(matrix[0])):
+            j = 1
+            while j < len(matrix[0]):
                 if matrix[i][j] == 0:
                     matrix[0][j] = 0
                     matrix[i][0] = 0
@@ -70,10 +68,16 @@ class Solution:
                 for i in range (len(matrix[0])):
                     matrix[i][j] =0
         for i in range (len(matrix[0])):
-            if (matrix[0][i] == 0):
+            if (matrix[i][0] == 0):
                 for j in range (len(matrix)):
                     matrix[i][j] =0  
         if  First_Row_HasZero:
+            for i in range (len(matrix[0])):
+                matrix[0][i] = 0
+        if First_Col_HasZero:
+            for i in range (len(matrix)):
+                matrix[i][0] = 0
+        return matrix
                  
             
                            
