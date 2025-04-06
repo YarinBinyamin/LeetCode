@@ -55,25 +55,27 @@ class Solution:
                 First_Row_HasZero = True     
                 break
         
-        # if matrix[i][j] = 0 -> matrix[0][j]
-        i = 0
-        while i < len(1,len(matrix)):
-            j = 1
-            while j < len(matrix[0]):
+        # if matrix[i][j] = 0 -> matrix[0][j] & matrix[i][0] = 0
+        for i in range(1, len(matrix)):
+            for j in range(1, len(matrix[0])):
                 if matrix[i][j] == 0:
                     matrix[0][j] = 0
                     matrix[i][0] = 0
-        for j in range (len(matrix)):
-            if (matrix[0][j] == 0):
-                for i in range (len(matrix[0])):
-                    matrix[i][j] =0
-        for i in range (len(matrix[0])):
-            if (matrix[i][0] == 0):
-                for j in range (len(matrix)):
-                    matrix[i][j] =0  
+                    
+        for i in range(1, len(matrix)):
+            if matrix[i][0] == 0:
+                for j in range(1, len(matrix[0])):
+                    matrix[i][j] = 0
+                    
+        for j in range(1, len(matrix[0])):
+            if matrix[0][j] == 0:
+                for i in range(1, len(matrix)):
+                    matrix[i][j] = 0 
+                    
         if  First_Row_HasZero:
-            for i in range (len(matrix[0])):
-                matrix[0][i] = 0
+            for j in range (len(matrix[0])):
+                matrix[0][j] = 0
+                
         if First_Col_HasZero:
             for i in range (len(matrix)):
                 matrix[i][0] = 0
@@ -83,12 +85,7 @@ class Solution:
                            
         
         
-    def setTheZero(self, matrix: List[List[int]], col : int, row :int ) -> None:
-        for i in range (len(matrix)): #clear col
-            matrix[i][col] = 0
-        for j in range (len(matrix[0])):
-            matrix[row][j] = 0
-        
+  
         
 if __name__ == "__main__":
     sol = Solution()
