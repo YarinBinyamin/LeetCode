@@ -82,13 +82,56 @@ class Solution:
         return matrix
                  
             
-                           
+    def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
+        left = 0
+        right = len(matrix) - 1
+        arr_index_search = -1
+        while (left <= right):
+            mid = ((left + right) // 2) 
+            if matrix[mid][0] <= target and target <= matrix[mid][len(matrix[0]) - 1]:
+                arr_index_search= mid 
+                break
+            elif  target <=  matrix[mid][0]:
+                right = mid -1
+            else:
+                left = mid +1 
+        if arr_index_search == -1:
+            return False
+        
+        left = 0
+        right = len(matrix[0]) - 1
+        while left <= right:
+            mid = (left + right) // 2 
+            if matrix[arr_index_search][mid] == target:
+                return True
+            elif matrix[arr_index_search][mid] < target:
+                left = mid +1
+            else:
+                right = mid -1
+            return False
+    
+        def sortColors(self, nums: List[int]) -> None:
+            count = [0] * 3  
+            for num in nums:
+                count[num] += 1 
+            
+            index = 0
+            for i in range(3):  
+                while count[i] > 0:  
+                    nums[index] = i
+                    index += 1
+                    count[i] -= 1
+                
+            
+            
+        
+                                       
         
         
   
         
 if __name__ == "__main__":
     sol = Solution()
-    arr = [[1, 1, 1], [1, 0, 1], [1, 1, 1]]
-    result = sol.setZeroes(arr)
+    arr = [2,2]
+    result = sol.sortColors(arr)
     print("Result:", result)
