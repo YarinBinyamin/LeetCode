@@ -121,6 +121,38 @@ class Solution:
                     nums[index] = i
                     index += 1
                     count[i] -= 1
+                    
+    def combine(self, n: int, k: int) -> List[List[int]]:
+        array_of_arrays = []
+        self.combineRec(n,k,array_of_arrays,[], 1)
+        return array_of_arrays
+        
+    def combineRec(self, n: int , k: int, array_of_arrays: List[List[int]], array :List[int], start : int ):
+        if k ==0 :
+                array_of_arrays.append(array.copy())
+                return
+        else:
+            for i in range (start, n+1 , +1):
+                    array.append(i)
+                    self.combineRec(n,k-1,array_of_arrays, array, i + 1)
+                    array.pop()
+                    
+    
+    def subsets(self, nums: List[int]) -> List[List[int]]:
+        rec = []
+        ans = []
+        
+        def subset(start):
+            if ans is not None :rec.append(ans.copy())
+            for i in range(start, len(nums)):
+                ans.append(nums[i])
+                subset(i + 1)
+                ans.pop()
+        subset(0)
+        rec.remove(rec[0])
+        
+        return rec
+
                 
             
             
@@ -132,6 +164,6 @@ class Solution:
         
 if __name__ == "__main__":
     sol = Solution()
-    arr = [2,2]
-    result = sol.sortColors(arr)
+    arr = [1,2,3]
+    result = sol.subsets(arr)
     print("Result:", result)
