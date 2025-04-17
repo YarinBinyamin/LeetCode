@@ -152,6 +152,47 @@ class Solution:
         rec.remove(rec[0])
         
         return rec
+    def exist(self, board: List[List[str]], word: str) -> bool:
+        pairs_starts= []
+        for i in range (len(board)):
+            for j in range(len(board[0])):
+                if board[i][j] == word[0]:
+                    pairs_starts.append([i,j])
+        for pair in pairs_starts:
+            boolBoard = [[False] * len(board[0]) for _ in range(len(board))]
+            boolBoard[pair[0]][pair[1]] = True
+            if self.exist_one(board, word[1:], pair[0], pair[1], boolBoard):
+                return True
+        return False
+            
+    
+    
+    def exist_one(self, board: List[List[str]], word: str, i : int, j: int,  boardBool: List[List[bool]]) -> bool:
+        if len(word) == 0:
+            return True
+        else :
+            if i-1 >= 0 and board[i-1][j] == word[0] and  boardBool[i-1][j] == False:
+                boardBool[i-1][j] = True
+                if self.exist_one(board, word[1:], i-1, j, boardBool):
+                    return True
+                boardBool[i-1][j] = False            
+            if i+1 <(len(board)) and board[i+1][j] == word[0] and  boardBool[i+1][j] == False:
+                boardBool[i+1][j] = True
+                if self.exist_one(board, word[1:], i+1, j, boardBool):
+                    return True
+                boardBool[i+1][j] = False
+            if j-1 >= 0 and board[i][j-1] == word[0] and  boardBool[i][j-1] == False:
+                boardBool[i][j-1] = True
+                if self.exist_one(board, word[1:], i, j-1, boardBool):
+                    return True
+                boardBool[i][j-1] = False
+            if j+1 <(len(board[0])) and board[i][j+1] == word[0] and  boardBool[i][j+1] == False:
+                boardBool[i][j+1] = True
+                if self.exist_one(board, word[1:], i, j+1, boardBool):
+                    return True
+                boardBool[i][j+1] = False
+        return False
+            
 
                 
             
@@ -164,6 +205,7 @@ class Solution:
         
 if __name__ == "__main__":
     sol = Solution()
-    arr = [1,2,3]
-    result = sol.subsets(arr)
+    arr = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]]
+    word = "ABCB"
+    result = sol.exist(arr,word)
     print("Result:", result)
