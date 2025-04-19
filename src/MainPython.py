@@ -192,20 +192,53 @@ class Solution:
                     return True
                 boardBool[i][j+1] = False
         return False
-            
-
+    
+    def removeDuplicates(self, nums: List[int]) -> int:
+        twice = False
+        last = nums[0]
+        for i in range (1,len(nums)):
+            if nums[i] != last :
+                last = nums[i]
+                twice = False
+            elif nums[i] == last and not twice:
+                twice = True
+            elif nums[i] == last and twice:
+                nums[i] = pow(10,4) + 1
+        list.sort(nums)
+        k=0
+        i=0
+        while i < (len(nums)) and nums[i] <= pow(10,4):
+            k = k +1 
+            i = i+1
+        return k   
+     
+    def search(self, nums: List[int], target: int) -> bool:
+        left = 0
+        right = len(nums) -1
+        while left <= right:
+            mid = left + (right - left) // 2 
+            if nums[mid] == target:
+                return True
+            if nums[left] < nums[mid]: #left side
+                if nums[left] <= target < nums[mid]: # inside left side
+                    right = mid -1 
+                else:
+                    left = mid + 1        
+            elif nums[left] > nums[mid]: # right side
+                if nums[mid] < target <= nums[right]: # inside right side
+                    left = mid + 1
+                else:
+                    right = mid -1
+            else:
+                left += 1 
+        return False
                 
             
-            
-        
-                                       
-        
-        
-  
+               
         
 if __name__ == "__main__":
     sol = Solution()
-    arr = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]]
+    arr = [2,5,6,0,0,1,2]
     word = "ABCB"
-    result = sol.exist(arr,word)
+    result = sol.search(arr, 0)
     print("Result:", result)
