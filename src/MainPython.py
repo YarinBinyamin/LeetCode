@@ -286,23 +286,29 @@ class Solution:
                     curR = curR.next
                 curI = nextNode
             curL.next = sentinalR.next
-            return sentinalL.next    
+            return sentinalL.next 
+    def merge(self, nums1: List[int], m: int, nums2: List[int], n: int) -> None:
+        A = m-1
+        B = n-1
+        C = m+n-1
+        while A >= 0 and B >= 0:
+            if nums1[A] > nums2[B]:
+                nums1[C] = nums1[A]
+                A -= 1
+            else:
+                nums1[C] = nums2[B]
+                B -= 1
+            C -= 1
+        while B >= 0:
+            nums1[C] = nums2[B]
+            B -= 1
+            C -= 1
+
+                  
                     
-                    
-                
-    def build_linked_list(values):
-        dummy = ListNode(-1)
-        current = dummy
-        for val in values:
-            current.next = ListNode(val)
-            current = current.next
-        return dummy.next        
-               
-        
-    if __name__ == "__main__":
+if __name__ == "__main__":
         sol = Solution()
-        head = build_linked_list([1, 4, 3, 2, 5, 2])
-        x = 3
-        word = "ABCB"
-        result = sol.partition(head, x)
+        nums1 =[1,2,3,0,0,0]
+        nums2 = [2,5,6]
+        result = sol.merge(nums1, 3, nums2, 3)
         print("Result:", result)
