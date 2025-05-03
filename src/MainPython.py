@@ -240,6 +240,22 @@ class Solution:
     #         self.next = next
     class Solution:
         def deleteDuplicates(self, head: Optional[ListNode]) -> Optional[ListNode]:
+            sentinal = ListNode(-1)
+            sentinal.next = head
+            prev = sentinal
+            cur = head
+            while cur != null:
+                if cur.netx != null and cur.val == cur.next.val:
+                    duplic = cur.val
+                    while cur != null and cur.val == duplic:
+                        cur = cur.next
+                    prev.next = cur
+                else:
+                    prev = cur
+                    cur = cur.next
+            return sentinal.next
+                    
+                
                 
             
                
