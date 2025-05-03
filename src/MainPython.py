@@ -1,5 +1,10 @@
 from typing import List
+from typing import Optional
 
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
 
 class Solution(object):
     def climbStairs(self, n: int) -> int:
@@ -234,35 +239,70 @@ class Solution:
         return False
     
     # Definition for singly-linked list.
-    # class ListNode:
-    #     def __init__(self, val=0, next=None):
-    #         self.val = val
-    #         self.next = next
-    class Solution:
-        def deleteDuplicates(self, head: Optional[ListNode]) -> Optional[ListNode]:
+    def deleteDuplicates(self, head: Optional[ListNode]) -> Optional[ListNode]:
             sentinal = ListNode(-1)
             sentinal.next = head
             prev = sentinal
             cur = head
-            while cur != null:
-                if cur.netx != null and cur.val == cur.next.val:
+            while cur != None:
+                if cur.next != None and cur.val == cur.next.val:
                     duplic = cur.val
-                    while cur != null and cur.val == duplic:
+                    while cur != Nones and cur.val == duplic:
                         cur = cur.next
                     prev.next = cur
                 else:
                     prev = cur
                     cur = cur.next
             return sentinal.next
+    def deleteDuplicatesEasy(self, head: Optional[ListNode]) -> Optional[ListNode]:
+            sentinal = ListNode(-1)
+            sentinal.next = head
+            prev = sentinal
+            cur = head
+            while cur != None:  
+                if cur.next != None and cur.val == cur.next.val:
+                    cur.next = cur.next.next
+                    prev.next = cur
+                else:   
+                    prev = cur
+                    cur = cur.next
+            return sentinal.next
+    def partition(self, head: Optional[ListNode], x: int) -> Optional[ListNode]:
+            sentinalL = ListNode(-1)
+            curL = sentinalL
+            sentinalR = ListNode(-1)
+            curR = sentinalR
+            curI = head
+            
+            while curI != None: 
+                nextNode = curI.next
+                curI.next = None
+                
+                if curI.val < x:
+                    curL.next = curI
+                    curL = curL.next
+                else:
+                    curR.next = curI
+                    curR = curR.next
+                curI = nextNode
+            curL.next = sentinalR.next
+            return sentinalL.next    
+                    
                     
                 
-                
-            
+    def build_linked_list(values):
+        dummy = ListNode(-1)
+        current = dummy
+        for val in values:
+            current.next = ListNode(val)
+            current = current.next
+        return dummy.next        
                
         
-if __name__ == "__main__":
-    sol = Solution()
-    arr = [2,5,6,0,0,1,2]
-    word = "ABCB"
-    result = sol.search(arr, 0)
-    print("Result:", result)
+    if __name__ == "__main__":
+        sol = Solution()
+        head = build_linked_list([1, 4, 3, 2, 5, 2])
+        x = 3
+        word = "ABCB"
+        result = sol.partition(head, x)
+        print("Result:", result)
