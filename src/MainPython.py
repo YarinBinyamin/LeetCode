@@ -303,12 +303,61 @@ class Solution:
             nums1[C] = nums2[B]
             B -= 1
             C -= 1
+    def grayCode(self, n: int) -> List[int]:
+        list = [0] *((2**n) )
+        list [0] = 0
+        if(n==0):
+            return list
+        list[1] = 1
+        cur = 1
+        index =2
+        for i in range(2,n+1):
+            cur *=2  # 01(1),10(2),100(4)
+            for j in range(cur-1,-1,-1) :
+                list[index]= cur + list[j]
+                index +=1  
+        return list     
+ #   def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:
+        if len(nums) == 1:
+            ans = [[], [nums[0]]]
+            return ans
+        ans =[]
+        ans.append([])
+        for size in range(1,len(nums)):
+            self.recSubSet(nums,size,ans,temp=[], index=0 )
+        ans.append(nums)
+        return ans
+        
+ #   def recSubSet(self, nums: List[int], size:int, ans : List[List[int]], temp: List[int], index:int):
+        if len(temp) == size:
+            if temp not in ans:
+                ans.append(temp.copy())
+                return
+        for i in range(index,len(nums)):
+            temp.append(nums[i])
+            self.recSubSet(nums,size, ans, temp , index +1)
+            temp.pop()
+            self.recSubSet(nums,size, ans, temp,index +1)
+    def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:
+        nums.sort()  # Sort first to group duplicates
+        ans = []
+        def recSubSet(start: int, path: List[int]):
+            ans.append(path.copy())
+            for i in range(start, len(nums)):
+                if(i > start and nums[i] == nums[i-1]):
+                    continue
+                path.append(nums[i])
+                recSubSet(i + 1, path)
+                path.pop()
+        recSubSet(0, [])
+        return ans
+                    
 
-                  
+            
                     
 if __name__ == "__main__":
         sol = Solution()
         nums1 =[1,2,3,0,0,0]
-        nums2 = [2,5,6]
-        result = sol.merge(nums1, 3, nums2, 3)
+        nums2 = [1,2,2]
+        result = sol.subsetsWithDup(nums2)
         print("Result:", result)
