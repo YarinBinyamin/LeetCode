@@ -5,6 +5,11 @@ class ListNode:
     def __init__(self, val=0, next=None):
         self.val = val
         self.next = next
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
 
 class Solution(object):
     def climbStairs(self, n: int) -> int:
@@ -351,13 +356,27 @@ class Solution:
                 path.pop()
         recSubSet(0, [])
         return ans
-                    
+    
+    # Definition for a binary tree node.
 
+
+    def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        ans = []
+
+        def recIn(curRoot: Optional[TreeNode]):
+            if not curRoot:
+                return
+            recIn(curRoot.left)
+            ans.append(curRoot.val)
+            recIn(curRoot.right)
+
+        recIn(root)
+        return ans
             
                     
 if __name__ == "__main__":
         sol = Solution()
-        nums1 =[1,2,3,0,0,0]
+        nums1 =[1,2,3,4,5,None,8,None,None,6,7,9]
         nums2 = [1,2,2]
-        result = sol.subsetsWithDup(nums2)
+        result = sol.inorderTraversal(nums1)
         print("Result:", result)
