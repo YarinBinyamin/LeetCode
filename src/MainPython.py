@@ -372,11 +372,24 @@ class Solution:
 
         recIn(root)
         return ans
-            
+    def maxProfit1(self, prices: List[int]) -> int:
+        index_buy = 0
+        max_profit = 0
+        for i in range(len(prices)):
+            if (prices[index_buy] > prices[i]):
+                index_buy = i
+            profit_today = prices[i] - prices[index_buy]
+            if(max_profit < profit_today):
+                max_profit = profit_today
+        return max(max_profit,0)
+                
                     
+    
+    
+            
 if __name__ == "__main__":
         sol = Solution()
-        nums1 =[1,2,3,4,5,None,8,None,None,6,7,9]
-        nums2 = [1,2,2]
-        result = sol.inorderTraversal(nums1)
+        nums1 =[0,3,8,6,8,6,6,8,2,0,2,7]
+        nums2 = [7,1,5,3,6,4]
+        result = sol.maxProfit1(nums2)
         print("Result:", result)
