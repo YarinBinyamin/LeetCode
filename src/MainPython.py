@@ -252,7 +252,7 @@ class Solution:
             while cur != None:
                 if cur.next != None and cur.val == cur.next.val:
                     duplic = cur.val
-                    while cur != Nones and cur.val == duplic:
+                    while cur != None and cur.val == duplic:
                         cur = cur.next
                     prev.next = cur
                 else:
@@ -382,14 +382,63 @@ class Solution:
             if(max_profit < profit_today):
                 max_profit = profit_today
         return max(max_profit,0)
-                
+    
+    def singleNumber(self, nums: List[int]) -> int:
+        result = 0
+        for num in nums:
+            result ^= num  
+        return result      
                     
+    def numDecodings(self, s: str) -> int:    
+        if len(s) == 0 or s[0] == '0':
+            return 0
+        dp = [0] * (len(s) + 1)
+        dp[0] = 1  # empty string
+        dp[1] = 1  # first char is valid (already checked)
+        for i in range(2, len(s) + 1):
+            one_digit = s[i-1]
+            two_digits = s[i-2:i]
+            if "1" <= one_digit <= "9":
+                dp[i] += dp[i-1]
+            if "10" <= two_digits <= "26":
+                dp[i] += dp[i-2]
+        return dp[len(s)]
+    def reverseBetween(self, head: Optional[ListNode], left: int, right: int) -> Optional[ListNode]:
+        if not head or left == right:
+            return head
+        dummy = ListNode(-1, head)
+        before = dummy
+        cur = head
+        for _ in range(left - 1):
+            before = before.next
+            cur = cur.next
+        n = right - left
+        while n > 0:
+            temp = cur.next
+            cur.next = temp.next
+            temp.next = before.next
+            before.next = temp
+            n -= 1
+        return dummy.next
+    def list_to_linked_list(lst: List[int]) -> Optional[ListNode]:
+        if not lst:
+            return None
+        head = ListNode(lst[0])
+        current = head
+        for value in lst[1:]:
+            current.next = ListNode(value)
+            current = current.next
+        return head
     
-    
+    def restoreIpAddresses(self, s: str) -> List[str]:
+        ans = []
+        def rec(s: str, x : int , cur : str):
+            if len(s) ==0 and x==0 :
+                ans.insert(cur.copy())
             
+                    
 if __name__ == "__main__":
         sol = Solution()
-        nums1 =[0,3,8,6,8,6,6,8,2,0,2,7]
-        nums2 = [7,1,5,3,6,4]
-        result = sol.maxProfit1(nums2)
+        head = sol.list_to_linked_list([1, 2, 3, 4, 5])
+        result = sol.reverseBetween(head, 2, 4)
         print("Result:", result)
