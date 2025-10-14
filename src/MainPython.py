@@ -432,13 +432,52 @@ class Solution:
     
     def restoreIpAddresses(self, s: str) -> List[str]:
         ans = []
-        def rec(s: str, x : int , cur : str):
-            if len(s) ==0 and x==0 :
-                ans.insert(cur.copy())
+        def rec(s: str, x: int, cur: str):
+            if x == 0 and len(s) == 0:
+                ans.append(cur[:-1])
+                return
+            if x == 0 or len(s) == 0:
+                return
+            rec(s[1:], x - 1, cur + s[:1] + '.')
+            if len(s) >= 2 and s[0] != '0':
+                rec(s[2:], x - 1, cur + s[:2] + '.')
+            if len(s) >= 3 and s[0] != '0' and int(s[:3]) <= 255:
+                rec(s[3:], x - 1, cur + s[:3] + '.')
+        rec(s, 4, "")
+        return ans 
+    
+    
+    # Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+         self.val = val
+         self.left = left
+         self.right = right 
+    def generateTrees(self, n: int) -> List[Optional[TreeNode]]:
+        if n == 0:
+            return []
+        def buildTrees(start, end):
+            if start > end:
+                return [None] 
+            all_trees = []
+            for i in range(start, end + 1):
+                left_trees = buildTrees(start, i - 1)
+                right_trees = buildTrees(i + 1, end)
+                for left in left_trees:
+                    for right in right_trees:
+                        root = TreeNode(i)
+                        root.left = left
+                        root.right = right
+                        all_trees.append(root)
+            return all_trees
+        return buildTrees(1, n)
+    def numTrees(self, n: int) -> int:
+        if  n == 0:
+            return 0 
+           
             
-                    
+            
 if __name__ == "__main__":
         sol = Solution()
-        head = sol.list_to_linked_list([1, 2, 3, 4, 5])
-        result = sol.reverseBetween(head, 2, 4)
+        result = sol.restoreIpAddresses("25525511135")
         print("Result:", result)
