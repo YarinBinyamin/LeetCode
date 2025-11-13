@@ -448,11 +448,11 @@ class Solution:
     
     
     # Definition for a binary tree node.
-class TreeNode:
-    def __init__(self, val=0, left=None, right=None):
-         self.val = val
-         self.left = left
-         self.right = right 
+    class TreeNode:
+        def __init__(self, val=0, left=None, right=None):
+            self.val = val
+            self.left = left
+            self.right = right 
     def generateTrees(self, n: int) -> List[Optional[TreeNode]]:
         if n == 0:
             return []
@@ -474,10 +474,86 @@ class TreeNode:
     def numTrees(self, n: int) -> int:
         if  n == 0:
             return 0 
-           
-            
-            
+
+    def isSymmetric(self, root: Optional[TreeNode]) -> bool:   
+            def isMirror(left, right):
+               if( left is None and right is None):
+                return True
+               else:
+                   if left is None or right is None:   
+                        return False
+                   elif (left.val == right.val):
+                       return isMirror(left.left, right.right) and isMirror(left.right, right.left)
+                   else:
+                       return False
+            return isMirror(root.left,root.right)
+    def levelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:  
+        if root is None:
+            return 
+        acc: List[List[int]] = []
+        def levelacc(node: Optional[TreeNode], i):
+                if node is None:
+                    return 
+                if i >= len(acc):
+                    acc.append([])
+                acc[i].append(node.val)
+                levelacc(node.left, acc, i+1)
+                levelacc(node.right, acc, i+1)
+                return acc
+        levelacc(root, 0)
+        return acc
+    
+    def zigzagLevelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
+        if root is None:
+            return [] 
+        acc: List[List[int]] = []
+        def levelacc(node: Optional[TreeNode], i , left : bool):
+                if node is None:
+                    return 
+                if i >= len(acc):
+                    acc.append([])
+                if left:
+                    acc[i].append(node.val)
+                else:
+                    acc[i].appendleft(node.val)
+                if(left):
+                    levelacc(node.left,  i+1, not left)
+                    levelacc(node.right,  i+1,not left)
+                else:
+                    levelacc(node.right,  i+1,not left)
+                    levelacc(node.left,  i+1, not left)
+                return acc
+        levelacc(root, 0, True)
+        return acc  
+    
+    def maxDepth(self, root: Optional[TreeNode]) -> int:
+        if root is None:
+            return 0
+        if root.left is None and root.right is None:
+            return 1
+        return 1 +max(self.maxDepth(root.right),self.maxDepth(root.left) )
+    
+    def buildTree(self, preorder: List[int], inorder: List[int]) -> Optional[TreeNode]:
+        if not preorder or not inorder:
+            return None
+        root = TreeNode(preorder[0])
+        mid = inorder.index(preorder[0])
+        root.left = self.buildTree(preorder[1:mid+1], inorder[:mid])
+        root.right = self.buildTree(preorder[mid+1:], inorder[mid+1:])
+        return root
+    
+    def buildTree(self, inorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
+        if not inorder or not postorder:
+            return None                   
+        root = TreeNode(postorder[ -1])
+        mid = inorder.index(postorder[-1])  
+        root.left = self.buildTree( inorder[0: mid], postorder[ :len(postorder) - mid -1 ] )
+        root.right = self.buildTree( inorder[mid + 1:], postorder[ len(postorder) - mid : mid] )
+        return root
+    
+                 
 if __name__ == "__main__":
-        sol = Solution()
-        result = sol.restoreIpAddresses("25525511135")
-        print("Result:", result)
+            sol = Solution()
+            root = [3,9,20,None,None,15,7]
+            result = sol.zigzagLevelOrder(root)
+            print("Result:", result)
