@@ -551,9 +551,28 @@ class Solution:
         root.right = self.buildTree( inorder[mid + 1:], postorder[ len(postorder) - mid : mid] )
         return root
     
+    def levelOrderBottom(self, root: Optional[TreeNode]) -> List[List[int]]:
+        acc : List[List[int]] = []
+        def Rec(node: Optional[TreeNode], i: int):
+            if node is None:
+                return
+            if i >= len(acc):
+                acc.append([])
+            acc[i].append(node.val)
+            Rec(node.left, i+1)
+            Rec(node.right, i +1)
+
+        Rec(root, 0)
+        return acc[::-1]
+            
+        
                  
 if __name__ == "__main__":
             sol = Solution()
-            root = [3,9,20,None,None,15,7]
+            root = TreeNode(3)
+            root.left = TreeNode(9)
+            root.right = TreeNode(20)
+            root.right.left = TreeNode(15)
+            root.right.right = TreeNode(7)
             result = sol.zigzagLevelOrder(root)
             print("Result:", result)
