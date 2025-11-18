@@ -564,9 +564,72 @@ class Solution:
 
         Rec(root, 0)
         return acc[::-1]
-            
+    def sortedArrayToBST(self, nums: List[int]) -> Optional[TreeNode]:  
+        if nums is None or len(nums) == 0:
+            return None
+        mid = (len(nums) //2 )
+        root = TreeNode(nums[mid])
+        root.left = self.sortedArrayToBST(nums[0:mid])
+        root.right = self.sortedArrayToBST(nums[mid +1 : len(nums)])
+        return root
+    def sortedListToBST(self, head: Optional[ListNode]) -> Optional[TreeNode]:          
+        if head is None: 
+            return None
+        if head.next is None:
+            return TreeNode(head.val)
+        slow = head
+        fast = head
+        mid =  slow
         
-                 
+        while (fast is not None ) and fast.next is not None:
+            mid=slow
+            fast = fast.next.next
+            slow= slow.next
+        root = TreeNode(slow.val)
+        mid.next= None
+        root.left = self.sortedListToBST(head)
+        root.right = self.sortedListToBST(slow.next)
+        return root
+        
+    def isBalanced(self, root: Optional[TreeNode]) -> bool:
+        def Rec(node):
+            if node is None:
+                return 0
+            heightL=Rec(node.left)
+            if heightL == -1 :
+                return -1
+            heightR=Rec(node.right)
+            if heightR == -1 :
+                return -1
+            if abs(heightL - heightR) > 1:
+                return -1
+            return 1 + max(heightR,heightL)
+        return Rec(root) != -1
+    
+    def maxDifference(self, s: str) -> int:  
+        #counts = Counter(s)
+        counts = {}
+        for char in s:
+            counts[char] = counts.get(char,0) + 1 # gets the current count or 0 if not exist - and add it 1
+        filterEven = list(filter(lambda x: x % 2 == 0 , counts.values() ))
+        filterOdd =  list(filter(lambda x: x % 2 == 1, counts.values() ))   
+        maxOdd = max(filterOdd) if filterOdd else 0
+        minEven = min(filterEven)   if filterEven else 0 
+        return maxOdd - minEven
+       
+    def maximumLengthSubstring(self, s: str) -> int:       
+        counts = {}
+        maxLength = 0
+        left = 0
+        for right in range(len(s)):
+            counts[s[right]] = counts.get(s[right],0) +1
+            while(counts[s[right]] > 2):
+                counts[s[left]] -=1
+                left +=1
+            curr = right - left +1
+            maxLength = max(maxLength, curr)
+        return maxLength
+            
 if __name__ == "__main__":
             sol = Solution()
             root = TreeNode(3)
