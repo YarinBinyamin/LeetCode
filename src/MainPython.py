@@ -629,7 +629,39 @@ class Solution:
             curr = right - left +1
             maxLength = max(maxLength, curr)
         return maxLength
-            
+    
+    def sumOfUnique(self, nums: List[int]) -> int:     
+        counts = {}
+        sum = 0
+        for x in nums:
+            c = counts.get(x,0) +1
+            counts[x] = c
+            if c == 1:
+                sum +=x
+            elif c == 2: 
+                sum -=x
+        return sum
+    
+    def stoneGameII(self, piles: List[int]) -> int:
+        sumA =0 
+        arr = []
+        M =1
+        m =1
+        for i in range(len(piles)):
+            if i % 2 == 0:
+                for j in range(1,2*M):
+                    cur_sum += piles[1,j]
+                    candidtae = sumA + cur_sum
+                    if candidtae > cur_sum:
+                        m=j
+                M =m
+               # sumA = max(Alice) - min(bob)
+            elif i % 2 == 1:
+                M+=1
+        return 
+                    
+                
+                
 if __name__ == "__main__":
             sol = Solution()
             root = TreeNode(3)
