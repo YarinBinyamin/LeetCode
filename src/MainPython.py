@@ -643,22 +643,25 @@ class Solution:
         return sum
     
     def stoneGameII(self, piles: List[int]) -> int:
-        sumA =0 
-        arr = []
-        M =1
-        m =1
-        for i in range(len(piles)):
-            if i % 2 == 0:
-                for j in range(1,2*M):
-                    cur_sum += piles[1,j]
-                    candidtae = sumA + cur_sum
-                    if candidtae > cur_sum:
-                        m=j
-                M =m
-               # sumA = max(Alice) - min(bob)
-            elif i % 2 == 1:
-                M+=1
-        return 
+        dp= {}
+        def dfs(alice, i , M):
+            if i == len(piles):
+                return 0
+            if (alice, i , M) in dp:
+                return dp[(alice, i , M)]
+            res = 0 if alice else float('inf')
+            total = 0
+            for x in range(1, 2 * M + 1):
+                if i + x > len(piles):
+                    break
+                total += piles[i + x - 1]
+                if alice:
+                    res = max(res, total + dfs(False, i + x, max(M, x)))
+                else:
+                    res = min(res, dfs(True, i + x, max(M, x)))
+            dp[(alice, i , M)] = res
+            return res
+        return dfs(True, 0, 1)  
                     
                 
                 
