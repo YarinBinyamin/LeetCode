@@ -1,5 +1,6 @@
 from typing import List
 from typing import Optional
+import math
 
 class ListNode:
     def __init__(self, val=0, next=None):
@@ -662,9 +663,230 @@ class Solution:
             dp[(alice, i , M)] = res
             return res
         return dfs(True, 0, 1)  
-                    
+        
+    def countTriples(self, n: int) -> int:   
+        counter = 0
+        for a in range(1,n+1):
+            for b in range(1,n+1):           
+                c = a*a + b*b
+                c = math.sqrt(c)
+                if (c.is_integer() and  c<=n):
+                    counter +=1
+        return counter
+    
+    def longestUnivaluePath(self, root: Optional[TreeNode]) -> int:  
+        max_len = 0 #   generally max
+        def rec(node): 
+            nonlocal max_len  
+            if node is None:
+                return 0
+            left_length =rec(node.left) 
+            right_length = rec(node.right)
+            
+            left_ext = 0
+            right_ext = 0
+            if node.left and node.left.val == node.val:
+                left_ext = left_length + 1
+
+            if node.right and node.right.val == node.val:
+                right_ext = right_length + 1
+            
+            max_len= max(max_len, left_ext+right_ext) # saving V shape if we have
+            return max(left_ext,right_ext) # return the longest straight path for next compution 
+        rec(root)
+        return max_len
+    def countOdds(self, low: int, high: int) -> int:
+        sum = high - low +1 
+        if sum % 2 == 0:
+            return sum//2
+        else :
+            if low % 2 == 1 :
+                return (sum //2) +1
+        return sum //2 
+    def deleteMiddle(self, head: Optional[ListNode]) -> Optional[ListNode]:  
+        if head is None or head.next is None:
+            return None
+        if head.next.next is None:
+            head.next = None
+            return head  
+        ans = head
+        prev = head
+        slow = head
+        fast = head
+        while fast.next is not None:
+            prev= slow
+            slow = slow.next
+            fast = fast.next
+            if fast.next is not None:
+                fast = fast.next
+        #replace
+        prev.next = slow.next
+        return ans     
+    def wordPattern(self, pattern: str, s: str) -> bool:
+        s_array = s.split(" ")
+        if len(pattern) != len(s_array):
+            return False
+
+        map_char_to_word = {}
+        map_word_to_char = {}
+        for char,word in zip(pattern,s_array):
+            if char in map_char_to_word: # i have the char but it refferd for a different word
+                if map_char_to_word[char] != word:
+                    return False
+            else: # we dont have the char in the map
+                map_char_to_word[char] = word
+            if word in map_word_to_char:
+                if map_word_to_char[word] !=char :
+                    return False
+            else:
+                map_word_to_char[word] = char
+        return True
+    def numSpecial(self, mat: List[List[int]]) -> int:
+        count = 0
+        row = {}
+        columns ={}
+        for i in range (len(mat)):
+            for j in range (len(mat[i])):
+                if mat[i][j] == 1:
+                    row[i] = row.get(i,0) +1
+                    columns[j] = columns.get(j,0) +1
+        for i in range (len(mat)):
+            for j in range (len(mat[i])):
+                if mat[i][j] == 1:
+                    if row[i] == 1 and columns[j] ==1  :
+                        count +=1
+        return count
+    def peopleAwareOfSecret(self, n: int, delay: int, forget: int) -> int:
+        arr = [0] * (n+1)
+        arr[1] = 1
+        whoCanShare= 0 # who can share a secret
+
+        final = 0
+        mod = 10**9 + 7
+        for i in range(2,n+1):
+
+            if i >= 1+ delay:
+                whoCanShare = (whoCanShare + arr[i-delay]) % mod
+
+            if i >= 1+ forget:
+                whoCanShare = (whoCanShare- arr[i-forget] ) % mod 
+
+            arr[i]=whoCanShare % mod
+        for days in range (max(1,n-forget+1), n+1):
+            final = (final + arr[days])%mod
+        return final % mod
+    def longestOnes(self, nums: List[int], k: int) -> int:
+        """""
+        cur_k =k
+        if len(nums) == 1:
+            if k>=0:
+                return 1
+            else:
+                return 0
+        start = 0 
+        end = 0
+        curr=0
+        max_length= 0
+        while end < len(nums):
+            while end < len(nums) and start<=end and nums[end] == 1  :
+                end +=1
+                curr = end -start 
+                max_length = max(max_length,curr)
                 
-                
+            if end < len(nums) and nums[end] == 0 :
+                if cur_k>0 and cur_k<=k:
+                    cur_k-=1
+                    end +=1
+                    curr = end - start
+                    max_length = max(max_length,curr)
+                   
+                else :
+                    while end < len(nums) and start <= end and nums[start] ==1:
+                        start +=1
+                    if end < len(nums) and nums[start] ==0 and cur_k < k :
+                        cur_k +=1
+                        start +=1
+                        curr = end - start 
+                        max_length = max(max_length,curr)
+        return max_length
+    """""
+
+        if len(nums) == 1:
+            if k>=0:
+                return 1
+            else:
+                return 0
+        zeros_at_window= 0
+        start = 0 
+        end = 0
+        curr=0
+        max_length= 0
+        while end < len(nums) and start <=end:
+            if nums[end] ==0 :
+                zeros_at_window +=1
+            end +=1
+            if zeros_at_window > k:
+                if nums[start] ==0:
+                    zeros_at_window -=1
+                start +=1
+            curr = end - start
+            max_length= max(max_length, curr)
+        return max_length
+        
+    def findContentChildren(self, g: List[int], s: List[int]) -> int:
+        g.sort()
+        s.sort()
+        ans = 0
+        i=0
+        j=0
+        while i < len(g) and j< len(s) :
+                if s[i] >=g[j]:
+                    ans+=1
+                    i+=1
+                    j+=1   
+                else:
+                    j+=1   
+        return ans
+    
+    def lengthOfLastWord(self, s: str) -> int:
+        arr = s.split(" ")
+        for i in reversed(arr):
+            if arr[i]>0:
+                return len(arr[i]) 
+    def accountBalanceAfterPurchase(self, purchaseAmount: int) -> int:    
+        new = purchaseAmount % 10
+        last = 0
+        if new <=5 :
+              last = purchaseAmount -new
+        else :
+            last = purchaseAmount + (10 -new) 
+        return 100 - last  
+    def getSmallestString(self, s: str) -> str:
+        char_array = list(s)
+        flag = False
+        for i in range(len(char_array) -1) :
+            if flag:
+                break
+            first =int(char_array[i])
+            second = int(char_array[i +1])
+            if (int(char_array[i]) > int(char_array[i +1])):
+                if first ==0:
+                    continue
+                if second == 0 and first%2==0 : 
+                    temp = char_array[i]
+                    char_array[i]= char_array[i+1]
+                    char_array[i+1] = temp
+                    flag = True
+                elif ((first % int(second) == 0) or ((second) % int(first) == 0)) :
+                    temp = char_array[i]
+                    char_array[i]= char_array[i+1]
+                    char_array[i+1] = temp
+                    flag = True
+
+
+        return char_array.join("")
+            
+        
 if __name__ == "__main__":
             sol = Solution()
             root = TreeNode(3)
@@ -672,5 +894,8 @@ if __name__ == "__main__":
             root.right = TreeNode(20)
             root.right.left = TreeNode(15)
             root.right.right = TreeNode(7)
-            result = sol.zigzagLevelOrder(root)
+            nums =[1,1,1,0,0,0,1,1,1,1,0]
+            g =[1,2]
+            s = [1,2,3]
+            result = sol.findContentChildren(g,s)
             print("Result:", result)
