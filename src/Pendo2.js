@@ -77,3 +77,48 @@ var closestTarget = function(words, target, startIndex) {
     }
     return minDist
 };
+var getDescentPeriods = function(prices) {
+/*  let start=0
+  let end =0 
+  const longestSubArrays = []
+  
+  while( end < prices.length ){
+    if( prices[end] - 1 === prices[end+1]){
+        end +=1
+    }
+    else {
+        longestSubArrays.push(prices.slice(start , end+1))
+        end +=1
+        start = end
+    }
+  }  
+  function subArrays( arr) {
+    const subArray = []
+    for( let i =0 ; i <arr.length ; i++){
+        for(let j=i ; j < arr.length ; j++){
+            subArray.push(arr.slice(i,j+1))
+        }
+    }
+    return subArray
+  }
+  const ans = []
+  while(longestSubArrays.length !== 0){
+        ans.push(subArrays(longestSubArrays.pop()))
+
+  }
+  return ans.flat().length */
+    if (prices.length === 0) return 0;
+    let ans = 0;
+    let streak = 0; 
+    for (let i = 0; i < prices.length; i++) {
+        if (i > 0 && prices[i - 1] - 1 === prices[i]) {
+        streak += 1;
+        } else {
+        streak = 1;
+        }
+        ans += streak; // all subarrays ending at i
+    }
+
+  return ans;
+};
+console.log(getDescentPeriods([3,2,1,4]))

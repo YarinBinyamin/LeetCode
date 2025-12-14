@@ -885,6 +885,45 @@ class Solution:
 
 
         return char_array.join("")
+    
+    def slowestKey(self, releaseTimes: List[int], keysPressed: str) -> str:
+        maxDuration = releaseTimes[0]
+        key = keysPressed[0]
+        for i in range(1,len(releaseTimes)):
+            curr = releaseTimes[i] -releaseTimes[i-1]
+            if (curr == maxDuration and keysPressed[i] > key ):
+                key = keysPressed[i]
+            elif(curr > maxDuration):
+                maxDuration = curr
+                key = keysPressed[i]
+        return key
+    def checkArithmeticSubarrays(self, nums: List[int], l: List[int], r: List[int]) -> List[bool]:
+        acc = [None] * len(l)
+        def check_possibilty(sub_nums: List[int]) -> bool:
+            sub_nums.sort()
+            flag = True
+            idx= 0 
+            val = sub_nums[idx+1] - sub_nums[idx]
+            while( idx< len(sub_nums) -1 and flag):
+                if(sub_nums[idx+1] - sub_nums[idx] !=val):
+                    return False
+                idx +=1
+            return True
+        for index in range(len(l)):
+            sub_arr = nums[l[index]:r[index]+1]
+            acc[index] = check_possibilty(sub_arr)
+        return acc
+    
+    def prefixesDivBy5(self, nums: List[int]) -> List[bool]:
+        acc = [None] * len(nums)
+        val =0 
+        for i in range(len(nums)):
+            val += nums[i]*1
+            acc[i] = (val % 5 == 0 )
+            val *=2
+        return acc
+            
+            
             
         
 if __name__ == "__main__":
@@ -894,8 +933,8 @@ if __name__ == "__main__":
             root.right = TreeNode(20)
             root.right.left = TreeNode(15)
             root.right.right = TreeNode(7)
-            nums =[1,1,1,0,0,0,1,1,1,1,0]
-            g =[1,2]
-            s = [1,2,3]
-            result = sol.findContentChildren(g,s)
+            nums =[4,6,5,9,3,7]
+            l =[0,1,1]
+            r = [2,3,5]
+            result = sol.prefixesDivBy5(l)
             print("Result:", result)
