@@ -1,6 +1,8 @@
 from typing import List
 from typing import Optional
 import math
+from collections import deque
+
 
 class ListNode:
     def __init__(self, val=0, next=None):
@@ -922,19 +924,347 @@ class Solution:
             acc[i] = (val % 5 == 0 )
             val *=2
         return acc
+
+    
+        
+    def bfs(graph, start_node) :
+        visited = set()
+        queue = deque([start_node]) ## iterable
+        visited.add(start_node)
+        traversal_order =[]
+        while queue:
+            curr_node = queue.popleft()
+            traversal_order.append(curr_node)
+            for neighbor in graph[curr_node]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    queue.append(neighbor)
+        return traversal_order
+    
+    def validateBinaryTreeNodes(self, n: int, leftChild: List[int], rightChild: List[int]) -> bool:
+        if n == 0 :
+            return True
+        if len(leftChild) != len(rightChild):
+            return False
+        in_degree = [0] * n
+        for i in range(n): # child with 2 parents
+            for child in (leftChild[i], rightChild[i]): # iterates left child and then rightchild
+                if child != -1:
+                    in_degree[child] += 1
+                    if in_degree[child] > 1:
+                        return False  
+        roots = [ i for i in range(n) if in_degree[i] ==0] # i adding from i to n just if condition ok
+        if len(roots) != 1:
+            return False
+        root = roots[0]
+        visited = set([root])
+        q = deque([root])
+        while q:
+            node = q.popleft()
+            for child in (leftChild[node], rightChild[node]):
+                if child == -1:
+                    continue
+                if child in visited:
+                    return False  
+                visited.add(child)
+                q.append(child)
+
+        return len(visited) == n
+  
+#class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+         self.val = val
+         self.left = left
+         self.right = right
+    def largestValues(self, root: Optional[TreeNode]) -> List[int]:
+        acc = []
+        h=0
+        def Rec(root, acc ,h):
+            if root == None:
+                return
+            if len(acc) <= h:
+                acc.append(root.val)
+            elif acc[h] < root.val :
+                acc[h] = root.val
+            if  root.left != None:
+                Rec(root.left, acc, h+1)
+            if  root.right != None:
+                Rec(root.right, acc, h+1)
+        Rec(root,acc,h)
+        return acc
+class Solution:           
+    def maxValue(self, nums: List[int]) -> List[int]:   
+        n = len(nums)
+        pre_max = [0] * len(nums)
+        suf_min = [0] * len(nums)
+        ans =[0] * len(nums)
+        max_val = 0
+        min_val =nums[n-1]
+        for i in range(n):
+            if nums[i]>max_val:
+                max_val = nums[i]
+            pre_max[i]=max_val    
+        for i in range(n-1,-1,-1):
+            if nums[i]< min_val:
+                min_val = nums[i]
+            suf_min[i] = min_val
+        print(pre_max)
+        print(suf_min)
+        ans[n-1] = pre_max[n-1]
+        for i in range(n-2,-1,-1):
+            ans[i] = pre_max[i]
+            # if i found that the index on my right is bi
+            if pre_max[i]>suf_min[i+1]: # if yes so i can not jump
+                ans[i]=ans[i+1]     # so i keep the big number i can go for
+        return ans
             
+    def reinitializePermutation(self, n: int) -> int:
+        j = 1
+        steps = 1      
+        def jump(j):
+            if j < (n/2):
+                return 2*j
+            else:
+                return 2*(j-(n//2)) +1
+        j = jump(j)
+        if j ==1 :
+            return 1
+        while j!=1:
+            j = jump(j)
+            steps +=1
+        return steps
+    def maxSubarrays(self, nums: List[int]) -> int:
+        target = ~0
+        count_sub =0
+        cur_val = ~0
+        n = len(nums)
+        for i in range(0,n):
+            target = target & nums[i]
+        r=0
+        if target > 0:
+            return 1
+        while r < n:  
+            cur_val &= nums[r]
+            if(cur_val == target):
+                count_sub +=1
+                cur_val = ~0
+            r+=1
+        return max(1, count_sub)
+    def minimumOperations(self, grid: List[List[int]]) -> int:
+        rows = len(grid)
+        cols = len(grid[0])
+        count = [[0 for _ in range(10)] for _ in range(cols)]
+        for i in range(cols):
+            for j in range(rows):
+                val = grid[j][i]
+                count[i][val] +=1
+        print(count)
+        cost = [[0 for _ in range(10)] for _ in range(cols)]
+        dp = [[10**9]*10 for _ in range(cols)] # each entry in a very big number
+        for i in range(cols):
+            for digit in range(10):
+                cost[i][digit] = rows - count[i][digit]
+        for i in range(10):
+            dp[0][i] = cost[0][i]
+        print(dp)
+        for i in range(1,cols):
+            for digit in range(10):
+                best_prev = min(dp[i-1][p] for p in range(10) if p != digit)
+                dp[i][digit] = cost[i][digit] + best_prev
+        return min(dp[cols-1])
+
+
+
+    def minDeletion(self, s: str, k: int) -> int:
+        count= {}
+        for i in s:
+            count[i] = count.get(i,0)+1
+        n= len(count)
+        if n <= k:
+            return 0
+        op= 0 
+        while n > k:
+            obj_min = min(count, key=count.get)
+            op+=count.get(obj_min)
+            n-=1
+            del count[obj_min]  
+        return op
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+         self.val = val
+         self.left = left
+         self.right = right
+    def closestNodes1(self, root: Optional[TreeNode], queries: List[int]):   
+        ans_total =[]
+        def RecMin( root, target_val , dist_from_val, curr):
+            if root is None:
+                return curr
+            if root.val == target_val:
+                return root.val
+            if target_val - root.val > 0 and dist_from_val > target_val - root.val: 
+                dist_from_val = target_val - root.val
+                curr = root.val
+            if(root.val > target_val):
+                return RecMin(root.left, target_val, dist_from_val,curr)
+            else:
+                 return RecMin(root.right, target_val, dist_from_val,curr)
+        def RecMax( root, target_val , dist_from_val, curr):
+            if root is None:
+                return curr
+            if root.val == target_val:
+                return root.val
+            if target_val - root.val < 0 and dist_from_val < target_val - root.val: 
+                dist_from_val = target_val - root.val
+                curr = root.val
+            if(root.val < target_val):
+                return RecMax(root.right, target_val, dist_from_val,curr)
+            else:
+                 return RecMax(root.left, target_val, dist_from_val,curr)
+        for element in queries:
+            a = RecMin(root,element, float('inf'), curr=root.val)
+            b = RecMax(root,element, float('-inf'), curr=root.val)
+            ans = [-1,-1]
+            if a <= element:
+                ans[0] =a
+            if b >= element:
+                ans[1] = b
+            ans_total.append(ans)
+        return ans_total
+        #print(RecMin(root,5, float('inf'), curr=root.val))
+        #print(RecMax(root,5, float('-inf'), curr=root.val))
+    def closestNodes(self, root: Optional[TreeNode], queries: List[int]):  
+        treeSorted = []
+        def BinarySearchTree(root,acc):
+            if root.val == None:
+                return
+            if root.left != None:
+                BinarySearchTree(root.left,acc)
+            acc.append(root.val)
+            if root.right != None:
+                BinarySearchTree(root.right,acc)
+        def binarySearch(arr, val):
+            left, right = -1, -1
+            l, r = 0, len(arr) - 1
+            while l <= r:
+                mid = l + (r - l) // 2
+                if arr[mid] < val:
+                    left = arr[mid]
+                    l = mid + 1
+                elif arr[mid] > val:
+                    right = arr[mid]
+                    r = mid - 1
+                else:
+                    return [arr[mid], arr[mid]]
+            return [left, right]
+        
+        BinarySearchTree(root, treeSorted)
+        results = []
+        for query in queries:
+            closest = binarySearch(treeSorted, query)
+            results.append(closest)
+        return results
             
-            
+class Solution():  
+
+                   
+    def minOperations(self, nums1: List[int], nums2: List[int]) -> int:
+        max1 = 0
+        max2 = 0
+        n = len(nums1)
+        for i in range(n):
+            if nums1[i] > max1:
+                max1 = nums1[i]
+            if nums2[i] > max2:
+                max2 = nums2[i]
+        if nums1[len(nums1) -1 ] == max1 and nums2[len(nums2) -1 ] == max2:
+            return 0
+        def swap(nums1, nums2, i):
+            temp = nums2[i]
+            nums2[i] = nums1[i]
+            nums1[i] = temp
+        def numOps(arr1, arr2):
+            ops = 0
+            for i in range(n-1, -1, -1):
+                if arr1[i] <= arr2[n - 1] and arr2[i] <= arr1[n - 1]:
+                    swap(arr1, arr2, i)
+                    ops +=1
+                print(f"mums 1 , i={i} {arr1}" )
+                print(f"mums 2 , i={i} {arr2}" )
+            max1 = 0
+            max2 = 0
+            for i in range(n):
+                if arr1[i] > max1:
+                    max1 = arr1[i]
+                if arr2[i] > max2:
+                    max2 = arr2[i]
+            print("===================================")
+            print(f"max1 = {max1} nums1 = {arr1[n-1]}")
+            print(f"max2 = {max2} nums2 = {arr2[n-1]}")
+            print("===================================")
+            if ops ==0 or (max1 != arr1[n-1]) or max2 != arr2[n-1]:
+                return -1
+            return ops
+        print("111111")
+        ops1 =  numOps(nums1,nums2)
+        swap(nums1,nums2, n-1)
+        ops2 = numOps(nums1,nums2)
+        if ops1 ==0 and ops2 == 0:
+            return -1
+        return min(ops1,ops2)
+
+from typing import List
+
+class Solution:
+    def minOperations(self, nums1: List[int], nums2: List[int]) -> int:
+        n = len(nums1)
+        if n == 1:
+            return 0
+
+        INF = 10**9
+
+        def ops_needed(a_last: int, b_last: int, a: List[int], b: List[int]) -> int:
+            ops = 0
+            # only indices 0..n-2 matter; last is fixed to (a_last,b_last) in this scenario
+            for i in range(n - 1):
+                x, y = a[i], b[i]
+                if x <= a_last and y <= b_last:
+                    continue
+                if y <= a_last and x <= b_last:
+                    ops += 1
+                else:
+                    return INF  # impossible in this scenario
+            return ops
+
+        # scenario 1: keep last as is
+        ans1 = ops_needed(nums1[-1], nums2[-1], nums1, nums2)
+
+        # scenario 2: swap last (costs 1 operation)
+        ans2 = 1 + ops_needed(nums2[-1], nums1[-1], nums1, nums2)
+
+        ans = min(ans1, ans2)
+        return -1 if ans >= INF else ans
+
+
         
 if __name__ == "__main__":
             sol = Solution()
+            tr =TreeNode() 
             root = TreeNode(3)
             root.left = TreeNode(9)
             root.right = TreeNode(20)
             root.right.left = TreeNode(15)
             root.right.right = TreeNode(7)
-            nums =[4,6,5,9,3,7]
-            l =[0,1,1]
-            r = [2,3,5]
-            result = sol.prefixesDivBy5(l)
+            grid = [[1, 1, 2, 2],[0, 1, 2, 3],[1, 0, 2, 2]]
+            # build tree right child
+            root = TreeNode(6)
+            root.left = TreeNode(2)
+            root.right = TreeNode(13)
+            root.left.left = TreeNode(1)
+            root.left.right = TreeNode(4)
+            root.right.left = TreeNode(9)
+            root.right.right = TreeNode(15)
+            root.right.right.left = TreeNode(14)
+            
+            result = sol.minOperations([1,2,7],[4,5,3])
             print("Result:", result)
